@@ -1,0 +1,9 @@
+[workspace]
+resolver = "3"
+members = [
+  "testing"
+]
+
+[workspace.dependencies]
+tree-sitter-highlight = "0.27.2"
+tree-sitter-rust = "0.24.2"

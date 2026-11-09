@@ -1,0 +1,9 @@
+[package]
+name = "ductile-systems-testing"
+version = "0.1.0"
+edition = "2024"
+license = "MIT OR Apache-2.0"
+
+[dependencies]
+tree-sitter-highlight.workspace = true
+tree-sitter-rust.workspace = true
