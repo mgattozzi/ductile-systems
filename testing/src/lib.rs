@@ -166,7 +166,14 @@ fn context_lines() -> usize {
 
 /// Set whether the coloring output for the error message should be used
 fn use_color() -> bool {
-    var_os("NO_COLOR").is_none() && io::stdout().is_terminal()
+    let cargo_color = var("CARGO_TERM_COLOR").ok();
+    if var_os("NO_COLOR").is_some() || cargo_color.as_deref() == Some("never") {
+        return false;
+    }
+    let forced = var_os("CLICOLOR_FORCE").is_some_and(|value| value != "0")
+        || cargo_color.as_deref() == Some("always")
+        || var_os("NEXTEST").is_some();
+    forced || io::stderr().is_terminal()
 }
 
 /// Read the file where a test fails if it exists and can be read
