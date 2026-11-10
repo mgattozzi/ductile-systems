@@ -2,6 +2,7 @@ use std::env::{var, var_os};
 use std::fs::read_to_string;
 use std::io::IsTerminal;
 use std::panic::Location;
+use std::result::Result as StdResult;
 use std::{env::current_dir, error::Error as StdError};
 use std::{fmt, io};
 use tree_sitter_highlight::{Highlight, HighlightConfiguration, HighlightEvent, Highlighter};
@@ -76,6 +77,8 @@ pub struct Error {
     source: Box<dyn StdError + Send + Sync>,
     location: &'static Location<'static>,
 }
+
+pub type Result<T = (), E = Error> = StdResult<T, E>;
 
 impl<E: Into<Box<dyn StdError + Send + Sync>>> From<E> for Error {
     #[track_caller]
@@ -289,7 +292,7 @@ mod tests {
 
     #[test]
     #[ignore = "fails on purpose to show the output"]
-    fn demo_missing_file() -> Result<(), Error> {
+    fn demo_missing_file() -> Result {
         let contents = read_to_string("/definitely/not/here")?;
         assert!(contents.is_empty());
         Ok(())
@@ -297,7 +300,7 @@ mod tests {
 
     #[test]
     #[ignore = "fails on purpose to show the output"]
-    fn demo_bad_number() -> Result<(), Error> {
+    fn demo_bad_number() -> Result {
         let port = "eighty".parse::<u16>()?;
         assert_eq!(port, 80);
         Ok(())
@@ -305,7 +308,7 @@ mod tests {
 
     #[test]
     #[ignore = "fails on purpose to show the output"]
-    fn demo_caused_by() -> Result<(), Error> {
+    fn demo_caused_by() -> Result {
         let port = load_config("eighty")?;
         assert_eq!(port, 80);
         Ok(())
